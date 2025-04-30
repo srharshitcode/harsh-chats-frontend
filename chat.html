@@ -96,10 +96,10 @@
         if (!userId || !username) {
             window.location.href = 'index.html';
         }
-
+        ws = new WebSocket(`wss://harsh-chats.onrender.com/ws/${userId}`);
         async function initializeChat() {
             // Connect to WebSocket
-            ws = new WebSocket(`https://harsh-chats.onrender.com${userId}`);
+            ;
             ws.onmessage = function(event) {
                 const chatbox = document.getElementById('chatbox');
                 const messageDiv = document.createElement('div');
