@@ -42,7 +42,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
+    <title>Harsh And Rigisha Chats</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         #chatbox {
@@ -99,7 +99,7 @@
 
         async function initializeChat() {
             // Connect to WebSocket
-            ws = new WebSocket(`wss://your-render-url.onrender.com/ws/${userId}`);
+            ws = new WebSocket(`https://harsh-chats.onrender.com${userId}`);
             ws.onmessage = function(event) {
                 const chatbox = document.getElementById('chatbox');
                 const messageDiv = document.createElement('div');
