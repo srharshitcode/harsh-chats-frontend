@@ -1,265 +1,70 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>HARSH AND RIGISHA Chat</title>
+    <title>HARSH AND RIGISHA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-=======
-    <title>HARSH AND RIGISHA CHATS</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
->>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-<<<<<<< HEAD
-        }
-        .chat-container {
-            width: 500px; /* Increased width */
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-=======
-            background-color: #f0f0f0;
-        }
-        .chat-container {
-            width: 500px; /* Increased from a likely smaller value (e.g., 300px) */
-            height: 600px; /* Increased from a likely smaller value (e.g., 400px) */
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
->>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
-        }
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-<<<<<<< HEAD
-            margin-bottom: 1.5rem;
-        }
-        .chat-header h1 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #1f2937;
-        }
-        .logout-btn {
-            background-color: #ef4444;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .logout-btn:hover {
-            background-color: #dc2626;
-        }
         #chatbox {
-            height: 600px; /* Increased height */
+            height: 400px;
             overflow-y: scroll;
             background-color: #f9fafb;
             border-radius: 0.5rem;
             padding: 1rem;
-            margin-bottom: 1.5rem;
         }
         .message {
             margin-bottom: 0.5rem;
-            padding: 0.75rem 1rem;
+            padding: 0.5rem;
             border-radius: 0.5rem;
-            display: inline-block; /* Matches width to text length */
-            max-width: 80%; /* Prevents overflow */
-            word-wrap: break-word; /* Ensures long words wrap */
+            max-width: 80%;
         }
         .message.self {
             background-color: #3b82f6;
-=======
-            margin-bottom: 20px;
-        }
-        .chat-header h2 {
-            margin: 0;
-        }
-        .logout-btn {
-            background-color: #ff4d4d;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+            margin-left: auto;
+            text-align: right;
         }
-        .chat-box {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
->>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
-            color: white;
-            background-color: blue;
-            display: inline-block; /* Makes the width match the content */
-            max-width: 80%; /* Prevents overly long messages from breaking layout */
-            word-wrap: break-word; /* Ensures long words wrap */
-        }
-<<<<<<< HEAD
         .message.other {
             background-color: #e5e7eb;
-            color: #1f2937;
+            color: black;
         }
         .notification {
             color: #6b7280;
             font-style: italic;
             text-align: center;
-            margin-bottom: 0.5rem;
-        }
-        .chat-input {
-            display: flex;
-            gap: 0.5rem;
-        }
-        .chat-input input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .chat-input input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-        }
-        .chat-input button {
-            background-color: #3b82f6;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .chat-input button:hover {
-            background-color: #2563eb;
-=======
-        .chat-input {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .chat-input input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-        .chat-input button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
->>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
         }
     </style>
 </head>
-<body>
-    <div class="chat-container">
-        <div class="chat-header">
-<<<<<<< HEAD
-            <h1>Chat Room</h1>
-            <button onclick="logout()" class="logout-btn">Logout</button>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold text-gray-800">Chat Room</h1>
+            <button onclick="logout()" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Logout</button>
         </div>
-        <div id="chatbox"></div>
-        <div class="chat-input">
-            <input type="text" id="message" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
-=======
-            <h2>Chat Room</h2>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
-        <div class="chat-box" id="chatBox"></div>
-        <div class="chat-input">
-            <input type="text" id="messageInput" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
->>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
-            <button onclick="sendMessage()">Send</button>
+        <div id="chatbox" class="mb-4"></div>
+        <div class="flex">
+            <input type="text" id="message" placeholder="Type a message..." class="flex-1 p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button onclick="sendMessage()" class="bg-blue-500 text-white p-2 rounded-r-lg hover:bg-blue-600">Send</button>
         </div>
     </div>
 
     <script>
-        const ws = new WebSocket(`wss://harsh-chats.onrender.com/ws/${localStorage.getItem('userId')}`);
-        const chatBox = document.getElementById('chatBox');
-        const messageInput = document.getElementById('messageInput');
+        let ws = null;
+        const userId = localStorage.getItem('user_id');
+        const username = localStorage.getItem('username');
 
-<<<<<<< HEAD
         if (!userId || !username) {
             window.location.href = 'index.html';
-            return;
         }
 
-        function initializeChat() {
+        async function initializeChat() {
+            // Connect to WebSocket
             ws = new WebSocket(`wss://harsh-chats.onrender.com/ws/${userId}`);
-
-            ws.onopen = () => console.log("WebSocket connection established");
-            ws.onmessage = (event) => {
+            ws.onmessage = function(event) {
                 const chatbox = document.getElementById('chatbox');
                 const messageDiv = document.createElement('div');
-                const messageText = event.data.trim();
+                const messageText = event.data;
 
                 if (messageText.includes('has joined the chat') || messageText.includes('has left the chat')) {
                     messageDiv.className = 'notification';
@@ -273,14 +78,7 @@
                 chatbox.appendChild(messageDiv);
                 chatbox.scrollTop = chatbox.scrollHeight;
             };
-
-            ws.onerror = (error) => {
-                console.error("WebSocket Error:", error);
-                alert("WebSocket connection failed. Please refresh the page.");
-            };
-
-            ws.onclose = () => {
-                console.log("WebSocket connection closed");
+            ws.onclose = function() {
                 const chatbox = document.getElementById('chatbox');
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'notification';
@@ -291,47 +89,28 @@
 
         function sendMessage() {
             const input = document.getElementById('message');
-            if (input.value.trim() && ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(`${username}: ${input.value.trim()}`);
+            if (input.value && ws) {
+                ws.send(input.value);
                 input.value = '';
-            } else if (ws.readyState !== WebSocket.OPEN) {
-                alert("WebSocket connection is not open. Please refresh the page.");
-=======
-        ws.onmessage = function(event) {
-            const message = document.createElement('div');
-            message.className = 'message';
-            message.textContent = event.data;
-            chatBox.appendChild(message);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        };
-
-        function sendMessage() {
-            const message = messageInput.value;
-            if (message.trim() !== '') {
-                ws.send(message);
-                messageInput.value = '';
->>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
             }
         }
 
         function logout() {
-<<<<<<< HEAD
-            if (ws) ws.close();
             localStorage.removeItem('user_id');
             localStorage.removeItem('username');
+            if (ws) ws.close();
             window.location.href = 'index.html';
         }
 
+        // Initialize chat on page load
         window.onload = initializeChat;
-        document.getElementById('message').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+
+        // Handle Enter key for sending messages
+        document.getElementById('message').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
         });
-=======
-            localStorage.removeItem('userId');
-            localStorage.removeItem('username');
-            window.location.href = 'index.html';
-        }
->>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
     </script>
 </body>
 </html>
