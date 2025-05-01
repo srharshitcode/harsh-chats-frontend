@@ -42,15 +42,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+    <title>HARSH AND RIGISHA Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+=======
     <title>HARSH AND RIGISHA CHATS</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+>>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+<<<<<<< HEAD
+        }
+        .chat-container {
+            width: 500px; /* Increased width */
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+=======
             background-color: #f0f0f0;
         }
         .chat-container {
@@ -62,11 +80,51 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
+>>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
         }
         .chat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+<<<<<<< HEAD
+            margin-bottom: 1.5rem;
+        }
+        .chat-header h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .logout-btn {
+            background-color: #ef4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+        #chatbox {
+            height: 600px; /* Increased height */
+            overflow-y: scroll;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .message {
+            margin-bottom: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            display: inline-block; /* Matches width to text length */
+            max-width: 80%; /* Prevents overflow */
+            word-wrap: break-word; /* Ensures long words wrap */
+        }
+        .message.self {
+            background-color: #3b82f6;
+=======
             margin-bottom: 20px;
         }
         .chat-header h2 {
@@ -92,12 +150,52 @@
             margin-bottom: 10px;
             padding: 10px;
             border-radius: 5px;
+>>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
             color: white;
             background-color: blue;
             display: inline-block; /* Makes the width match the content */
             max-width: 80%; /* Prevents overly long messages from breaking layout */
             word-wrap: break-word; /* Ensures long words wrap */
         }
+<<<<<<< HEAD
+        .message.other {
+            background-color: #e5e7eb;
+            color: #1f2937;
+        }
+        .notification {
+            color: #6b7280;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .chat-input input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        .chat-input button {
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .chat-input button:hover {
+            background-color: #2563eb;
+=======
         .chat-input {
             display: flex;
             justify-content: space-between;
@@ -117,18 +215,28 @@
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
+>>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
         <div class="chat-header">
+<<<<<<< HEAD
+            <h1>Chat Room</h1>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+        <div id="chatbox"></div>
+        <div class="chat-input">
+            <input type="text" id="message" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+=======
             <h2>Chat Room</h2>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
         <div class="chat-box" id="chatBox"></div>
         <div class="chat-input">
             <input type="text" id="messageInput" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+>>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
@@ -138,6 +246,57 @@
         const chatBox = document.getElementById('chatBox');
         const messageInput = document.getElementById('messageInput');
 
+<<<<<<< HEAD
+        if (!userId || !username) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        function initializeChat() {
+            ws = new WebSocket(`wss://harsh-chats.onrender.com/ws/${userId}`);
+
+            ws.onopen = () => console.log("WebSocket connection established");
+            ws.onmessage = (event) => {
+                const chatbox = document.getElementById('chatbox');
+                const messageDiv = document.createElement('div');
+                const messageText = event.data.trim();
+
+                if (messageText.includes('has joined the chat') || messageText.includes('has left the chat')) {
+                    messageDiv.className = 'notification';
+                    messageDiv.textContent = messageText;
+                } else {
+                    const [sender, content] = messageText.split(': ');
+                    messageDiv.className = `message ${sender === username ? 'self' : 'other'}`;
+                    messageDiv.textContent = messageText;
+                }
+
+                chatbox.appendChild(messageDiv);
+                chatbox.scrollTop = chatbox.scrollHeight;
+            };
+
+            ws.onerror = (error) => {
+                console.error("WebSocket Error:", error);
+                alert("WebSocket connection failed. Please refresh the page.");
+            };
+
+            ws.onclose = () => {
+                console.log("WebSocket connection closed");
+                const chatbox = document.getElementById('chatbox');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'notification';
+                messageDiv.textContent = 'Disconnected from server';
+                chatbox.appendChild(messageDiv);
+            };
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('message');
+            if (input.value.trim() && ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(`${username}: ${input.value.trim()}`);
+                input.value = '';
+            } else if (ws.readyState !== WebSocket.OPEN) {
+                alert("WebSocket connection is not open. Please refresh the page.");
+=======
         ws.onmessage = function(event) {
             const message = document.createElement('div');
             message.className = 'message';
@@ -151,14 +310,28 @@
             if (message.trim() !== '') {
                 ws.send(message);
                 messageInput.value = '';
+>>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
             }
         }
 
         function logout() {
+<<<<<<< HEAD
+            if (ws) ws.close();
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('username');
+            window.location.href = 'index.html';
+        }
+
+        window.onload = initializeChat;
+        document.getElementById('message').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+=======
             localStorage.removeItem('userId');
             localStorage.removeItem('username');
             window.location.href = 'index.html';
         }
+>>>>>>> dda6c84209aae27cdecf7a103e637b93d5adf77e
     </script>
 </body>
 </html>
