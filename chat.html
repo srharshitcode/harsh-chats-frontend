@@ -3,114 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HARSH AND RIGISHA Chat App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>HARSH AND RIGISHA CHATS/title>
     <style>
-        #chatbox {
-            height: 400px;
-            overflow-y: scroll;
-            background-color: #f9fafb;
-            border-radius: 0.5rem;
-            padding: 1rem;
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .chat-container {
+            width: 500px; /* Increased from a likely smaller value (e.g., 300px) */
+            height: 600px; /* Increased from a likely smaller value (e.g., 400px) */
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .chat-header h2 {
+            margin: 0;
+        }
+        .logout-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-box {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         .message {
-            margin-bottom: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            max-width: 80%;
-        }
-        .message.self {
-            background-color: #3b82f6;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
             color: white;
-            margin-left: auto;
-            text-align: right;
+            background-color: blue;
+            display: inline-block; /* Makes the width match the content */
+            max-width: 80%; /* Prevents overly long messages from breaking layout */
+            word-wrap: break-word; /* Ensures long words wrap */
         }
-        .message.other {
-            background-color: #e5e7eb;
-            color: black;
+        .chat-input {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .notification {
-            color: #6b7280;
-            font-style: italic;
-            text-align: center;
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .chat-input button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-2xl font-bold text-gray-800">Chat Room</h1>
-            <button onclick="logout()" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Logout</button>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Chat Room</h2>
+            <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
-        <div id="chatbox" class="mb-4"></div>
-        <div class="flex">
-            <input type="text" id="message" placeholder="Type a message..." class="flex-1 p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <button onclick="sendMessage()" class="bg-blue-500 text-white p-2 rounded-r-lg hover:bg-blue-600">Send</button>
+        <div class="chat-box" id="chatBox"></div>
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()">Send</button>
         </div>
     </div>
 
     <script>
-        let ws = null;
-        const userId = localStorage.getItem('user_id');
-        const username = localStorage.getItem('username');
+        const ws = new WebSocket(`wss://harsh-chats.onrender.com/ws/${localStorage.getItem('userId')}`);
+        const chatBox = document.getElementById('chatBox');
+        const messageInput = document.getElementById('messageInput');
 
-        if (!userId || !username) {
-            window.location.href = 'index.html';
-        }
-
-        async function initializeChat() {
-            // Connect to WebSocket
-            ws = new WebSocket(`wss://harsh-chats.onrender.com/ws/${userId}`);
-            ws.onmessage = function(event) {
-                const chatbox = document.getElementById('chatbox');
-                const messageDiv = document.createElement('div');
-                const messageText = event.data;
-
-                if (messageText.includes('has joined the chat') || messageText.includes('has left the chat')) {
-                    messageDiv.className = 'notification';
-                    messageDiv.textContent = messageText;
-                } else {
-                    const [sender, content] = messageText.split(': ');
-                    messageDiv.className = `message ${sender === username ? 'self' : 'other'}`;
-                    messageDiv.textContent = messageText;
-                }
-
-                chatbox.appendChild(messageDiv);
-                chatbox.scrollTop = chatbox.scrollHeight;
-            };
-            ws.onclose = function() {
-                const chatbox = document.getElementById('chatbox');
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'notification';
-                messageDiv.textContent = 'Disconnected from server';
-                chatbox.appendChild(messageDiv);
-            };
-        }
+        ws.onmessage = function(event) {
+            const message = document.createElement('div');
+            message.className = 'message';
+            message.textContent = event.data;
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
 
         function sendMessage() {
-            const input = document.getElementById('message');
-            if (input.value && ws) {
-                ws.send(input.value);
-                input.value = '';
+            const message = messageInput.value;
+            if (message.trim() !== '') {
+                ws.send(message);
+                messageInput.value = '';
             }
         }
 
         function logout() {
-            localStorage.removeItem('user_id');
+            localStorage.removeItem('userId');
             localStorage.removeItem('username');
-            if (ws) ws.close();
             window.location.href = 'index.html';
         }
-
-        // Initialize chat on page load
-        window.onload = initializeChat;
-
-        // Handle Enter key for sending messages
-        document.getElementById('message').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
     </script>
 </body>
 </html>
